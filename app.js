@@ -149,30 +149,42 @@ let rotor3Count = 0;
 // retrieve users message and encrypt it
 function getMessage() {
   //empty variable to add encrypted letters to
-  // let encryptedMsg = "";
+  let encryptedMsg = "";
 
   var userInput = document.getElementById("cypherInput").value.toUpperCase();
   for (let i = 0; i < userInput.length; i++) {
     //plugboard
     let plugOut = alphabet.indexOf(userInput[i]);
     let plugOutSub = plugboard[plugOut];
-    console.log("plugboard sub is " + plugOutSub);
 
-    //rotor1 sub and rotate
+    //rotor1 sub
     let rotor1Out = plugboard.indexOf(plugOutSub);
     let rotor1OutSub = rotor1[rotor1Out + (rotor1Count % 26)];
-    console.log("rotor 1 sub is " + rotor1OutSub);
+    //rotor1 rotate
     rotor1Count++;
 
-    //rotor2 sub and rotate
+    //rotor2 sub
     let rotor2Out = rotor1.indexOf(rotor1OutSub);
     let rotor2OutSub = rotor2[rotor2Out + (rotor2Count % 26)];
-    console.log("rotor 2 sub is " + rotor2OutSub);
-    if (rotor1Count % 26 == 0) {
+    //rotor2 rotate
+    if (rotor1Count > 0 && rotor1Count % 26 == 0) {
       rotor2Count++;
     }
+
     console.log(
-      "rotor 1 count is " + rotor1Count + " rotor 2 count is " + rotor2Count
+      // "User input: " +
+      //   userInput[i] +
+      //   ", Plug Sub: " +
+      //   plugOutSub +
+      ", R1 count: " +
+        rotor1Count +
+        ", R1 Sub: " +
+        rotor1OutSub +
+        ", R2 count: " +
+        rotor2Count +
+        ", R2 Sub: " +
+        rotor2OutSub +
+        rotor2Out
     );
   }
 
