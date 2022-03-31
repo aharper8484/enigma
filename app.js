@@ -146,21 +146,50 @@ let rotor1Count = 0;
 let rotor2Count = 0;
 let rotor3Count = 0;
 
-// retrieve users message from form
+//substitute function
+// function substitution(input, sub) {
+//   let txtIndex = alphabet.findIndex(input);
+//   let subResult = sub[txtIndex];
+//   return subResult;
+// }
+
+// retrieve users message and encrypt it
 function getMessage() {
-  var message = document.getElementById("cypherInput").value;
-  let cypherInput = message.toUpperCase();
-  return cypherInput;
+  //empty variable to add encrypted letters to
+  // let encryptedMsg = "";
+
+  var userInput = document.getElementById("cypherInput").value.toUpperCase();
+  for (let i = 0; i < userInput.length; i++) {
+    //plugboard
+    let plugOut = alphabet.indexOf(userInput[i]);
+    let plugOutSub = plugboard[plugOut];
+    console.log("plugboard sub is " + plugOutSub);
+
+    //rotor1
+    let rotor1Out = plugboard.indexOf(plugOutSub);
+    let rotor1OutSub = rotor1[rotor1Out];
+    console.log("rotor 1 sub is " + rotor1OutSub);
+    if(rotor1Count >)
+    rotor1Count++;
+  }
+
+  //    {
+  //     //plugboard
+  //     substitution(cypherInput[i], plugboard);
+  //     console.log(subResult);
+  //rotor1
+  //rotor2
+  //rotor3
+  //reflector
+  //rotor3-substitute only
+  //rotor2-substitute only
+  //rotor1-substitute only
+  //plugboard
+  //push resulting letter to cypherOutput
+  //     }
+
+  //     return encryptedMsg;
+  //   }
 }
 
-// //process letter through plugboard
-// function plugboardOut(input) {
-//   let letterIndex = alphabet.findIndex(input);
-//   return plugboard[letterIndex];
-// }
-
-// let plugboardOutResult = plugboardOut(userInput);
-
-// function substitution(input, substitution) {
-//   let;
-// }
+//push encryptedMsg onto index.html
