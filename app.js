@@ -165,12 +165,14 @@ function getMessage() {
     let plugOutSub = plugboard[plugOut];
     console.log("plugboard sub is " + plugOutSub);
 
-    //rotor1
+    //rotor1 sub and rotate
     let rotor1Out = plugboard.indexOf(plugOutSub);
-    let rotor1OutSub = rotor1[rotor1Out];
+    let rotor1OutSub = rotor1[rotor1Out + rotor1Count];
     console.log("rotor 1 sub is " + rotor1OutSub);
-    if(rotor1Count >)
-    rotor1Count++;
+    if (rotor1Count % 25 !== 0) {
+      rotor1Count++;
+    }
+    console.log(rotor1Count);
   }
 
   //    {
