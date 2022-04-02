@@ -142,50 +142,47 @@ const rotor3 = [
   "O",
 ];
 
-let rotor1Count = 0;
-let rotor2Count = 0;
-let rotor3Count = 0;
-
 // retrieve users message and encrypt it
 function getMessage() {
+  let rotor1Offset = 0;
+  // let rotor2Offset = 0;
+  // let rotor3Offset = 0;
+
   //empty variable to add encrypted letters to
   let encryptedMsg = "";
+
+  //function to remove space and non-letter characters
 
   var userInput = document.getElementById("cypherInput").value.toUpperCase();
   for (let i = 0; i < userInput.length; i++) {
     //plugboard
-    let plugOut = alphabet.indexOf(userInput[i]);
-    let plugOutSub = plugboard[plugOut];
+    let plugOutbound = alphabet.indexOf(userInput[i]);
+
+    let plugOutboundSub = plugboard[plugOutbound];
 
     //rotor1 sub
-    let rotor1Out = plugboard.indexOf(plugOutSub);
-    let rotor1OutSub = rotor1[rotor1Out + (rotor1Count % 26)];
+    let rotor1Outbound = plugboard.indexOf(plugOutboundSub);
+    let rotor1OutSub = rotor1[rotor1Outbound + (rotor1Offset % 26)];
     //rotor1 rotate
-    rotor1Count++;
+    // if (rotor1Offset === 25) {
+    //   rotor1Offset = 0;
+    // } else {
+    //   rotor1Offset++;
+    // }
+    rotor1Offset++;
 
-    //rotor2 sub
-    let rotor2Out = rotor1.indexOf(rotor1OutSub);
-    let rotor2OutSub = rotor2[rotor2Out + (rotor2Count % 26)];
-    //rotor2 rotate
-    if (rotor1Count > 0 && rotor1Count % 26 == 0) {
-      rotor2Count++;
+    if (rotor1Offset > 0 && rotor1Offset % 26 == 0) {
+      rotor2Offset++;
     }
 
-    console.log(
-      // "User input: " +
-      //   userInput[i] +
-      //   ", Plug Sub: " +
-      //   plugOutSub +
-      ", R1 count: " +
-        rotor1Count +
-        ", R1 Sub: " +
-        rotor1OutSub +
-        ", R2 count: " +
-        rotor2Count +
-        ", R2 Sub: " +
-        rotor2OutSub +
-        rotor2Out
-    );
+    //rotor2 sub
+    // let rotor2Outbound = rotor1.indexOf(rotor1OutSub);
+    // let rotor2OutSub = rotor2[rotor2Outbound + (rotor2Offset % 26)];
+    // //rotor2 rotate
+    // if (rotor1Offset % 26 === 0 && rotor1Offset > 0) {
+    //   rotor1Offset = 0;
+    //   rotor2Offset++;
+    // }
   }
 
   //    {
