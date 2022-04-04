@@ -57,7 +57,7 @@ const plugboard = [
   "A",
 ];
 
-//array of fast rotor
+//array of rotors
 const fastRotor = [
   "E",
   "K",
@@ -145,6 +145,7 @@ const slowRotor = [
   "O",
 ];
 
+//reflector array
 const reflector = [
   "E",
   "J",
@@ -176,6 +177,7 @@ const reflector = [
 
 // retrieve users message and encrypt it
 function getMessage() {
+  //variables containing rotor positions
   let fastRotorOffset = 0;
   let mediumRotorOffset = 0;
   let slowRotorOffset = 0;
@@ -183,13 +185,11 @@ function getMessage() {
   //empty variable to add encrypted letters to
   let encryptedMsg = "";
 
-  //function to remove space and non-letter characters
-
+  //function to retrieve text, remove space + non-letter characters and convert to uppercase
   var userInput = document
     .getElementById("cypherInput")
     .value.replace(/\s+/g, "")
     .toUpperCase();
-  //function to remove numbers and whitespace
 
   //loop through each letter of the message/user input
   for (let i = 0; i < userInput.length; i++) {
@@ -257,6 +257,7 @@ function getMessage() {
 
     //push resulting letter to cypherOutput
     encryptedMsg = encryptedMsg + cypherLetter;
+    console.log(i + " letter " + cypherLetter);
   }
   return (document.getElementById("cypher").innerHTML = encryptedMsg);
 }
