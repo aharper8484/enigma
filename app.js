@@ -1,3 +1,4 @@
+//array of regular alphabet - index 0 to 25 (26 letters)
 const alphabet = [
   "A",
   "B",
@@ -27,6 +28,7 @@ const alphabet = [
   "Z",
 ];
 
+//array of plugboard - index 0 to 25
 const plugboard = [
   "Z",
   "P",
@@ -55,7 +57,8 @@ const plugboard = [
   "A",
 ];
 
-const rotor1 = [
+//array of fast rotor
+const fastRotor = [
   "E",
   "K",
   "M",
@@ -84,7 +87,7 @@ const rotor1 = [
   "J",
 ];
 
-const rotor2 = [
+const mediumRotor = [
   "A",
   "J",
   "D",
@@ -113,7 +116,7 @@ const rotor2 = [
   "E",
 ];
 
-const rotor3 = [
+const slowRotor = [
   "B",
   "D",
   "F",
@@ -140,68 +143,123 @@ const rotor3 = [
   "S",
   "Q",
   "O",
+];
+
+const reflector = [
+  "E",
+  "J",
+  "M",
+  "Z",
+  "A",
+  "L",
+  "Y",
+  "X",
+  "V",
+  "B",
+  "W",
+  "F",
+  "C",
+  "R",
+  "Q",
+  "U",
+  "O",
+  "N",
+  "T",
+  "S",
+  "P",
+  "I",
+  "K",
+  "H",
+  "G",
+  "D",
 ];
 
 // retrieve users message and encrypt it
 function getMessage() {
-  let rotor1Offset = 0;
-  // let rotor2Offset = 0;
-  // let rotor3Offset = 0;
+  let fastRotorOffset = 0;
+  let mediumRotorOffset = 0;
+  let slowRotorOffset = 0;
 
   //empty variable to add encrypted letters to
   let encryptedMsg = "";
 
   //function to remove space and non-letter characters
 
-  var userInput = document.getElementById("cypherInput").value.toUpperCase();
+  var userInput = document
+    .getElementById("cypherInput")
+    .value.replace(/\s+/g, "")
+    .toUpperCase();
+  //function to remove numbers and whitespace
+
+  //loop through each letter of the message/user input
   for (let i = 0; i < userInput.length; i++) {
-    //plugboard
-    let plugOutbound = alphabet.indexOf(userInput[i]);
+    //plugboard Outbound
+    //get index of letter form alphabet and store in variable
+    let plugboardInputIndex = alphabet.indexOf(userInput[i]);
+    //substitute letter with plugboard array
+    let plugboardOutput = plugboard[plugboardInputIndex];
 
-    let plugOutboundSub = plugboard[plugOutbound];
+    // sample messages
+    // hwjefmcwltfnsnselrfdnwoehwjefmcwltfnsnselrfdnwoehwjefmcwltfnsnselrfdnwoe
+    // aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 
-    //rotor1 sub
-    let rotor1Outbound = plugboard.indexOf(plugOutboundSub);
-    let rotor1OutSub = rotor1[rotor1Outbound + (rotor1Offset % 26)];
-    //rotor1 rotate
-    // if (rotor1Offset === 25) {
-    //   rotor1Offset = 0;
-    // } else {
-    //   rotor1Offset++;
-    // }
-    rotor1Offset++;
+    //fast rotor substitute
+    //get index of the plugboard array
+    let fastRotorOut = plugboard.indexOf(plugboardOutput);
+    //substitute letter with fast rotor array
+    //include offset
+    fastRotorOut = (fastRotorOut + fastRotorOffset) % 26;
+    let fastRotorNewLetter = fastRotor[fastRotorOut];
+    let fastRotorNewIndex = fastRotor.indexOf(fastRotorNewLetter);
+    fastRotorNewIndex = (fastRotorNewIndex - fastRotorOffset + 26) % 26;
+    fastRotorOffset++;
 
-    if (rotor1Offset > 0 && rotor1Offset % 26 == 0) {
-      rotor2Offset++;
+    //rotor2 sub and rotate
+    let mediumRotorOut = fastRotor.indexOf(fastRotorNewLetter);
+    mediumRotorOut = (mediumRotorOut + mediumRotorOffset) % 26;
+    let mediumRotorNewLetter = mediumRotor[mediumRotorOut];
+    let mediumRotorNewIndex = mediumRotor.indexOf(mediumRotorNewLetter);
+    mediumRotorNewIndex = (mediumRotorNewIndex - mediumRotorOffset + 26) % 26;
+    if (fastRotorOffset > 0 && fastRotorOffset % 26 == 0) {
+      mediumRotorOffset++;
     }
 
-    //rotor2 sub
-    // let rotor2Outbound = rotor1.indexOf(rotor1OutSub);
-    // let rotor2OutSub = rotor2[rotor2Outbound + (rotor2Offset % 26)];
-    // //rotor2 rotate
-    // if (rotor1Offset % 26 === 0 && rotor1Offset > 0) {
-    //   rotor1Offset = 0;
-    //   rotor2Offset++;
-    // }
+    //rotor3 sub and rotate
+    let slowRotorOut = mediumRotor.indexOf(mediumRotorNewLetter);
+    slowRotorOut = (slowRotorOut + slowRotorOffset) % 26;
+    let slowRotorNewLetter = slowRotor[slowRotorOut];
+    let slowRotorNewIndex = slowRotor.indexOf(slowRotorNewLetter);
+    slowRotorNewIndex = (slowRotorNewIndex - slowRotorOffset + 26) % 26;
+    if (mediumRotorOffset > 0 && mediumRotorOffset % 26 == 0) {
+      slowRotorOffset++;
+    }
+
+    //reflector substitution
+    let reflectorInputIndex = slowRotor.indexOf(slowRotorNewLetter);
+    //substitute letter with reflector array
+    let reflectorNewLetter = reflector[reflectorInputIndex];
+
+    //rotor3-substitute only
+    let slowRotorReturnIndex = reflector.indexOf(reflectorNewLetter);
+    let slowRotorReturnLetter = slowRotor[slowRotorReturnIndex];
+
+    //rotor2-substitute only
+    let mediumRotorReturnIndex = slowRotor.indexOf(slowRotorReturnLetter);
+    let mediumRotorReturnLetter = mediumRotor[mediumRotorReturnIndex];
+
+    //rotor1-substitute only
+    let fastRotorReturnIndex = mediumRotor.indexOf(mediumRotorReturnLetter);
+    let fastRotorReturnLetter = fastRotor[fastRotorReturnIndex];
+
+    //plugboard
+    let PlugboardReturnIndex = fastRotor.indexOf(fastRotorReturnLetter);
+    let cypherLetter = plugboard[PlugboardReturnIndex];
+
+    //push resulting letter to cypherOutput
+    encryptedMsg = encryptedMsg + cypherLetter;
   }
-
-  //    {
-  //     //plugboard
-  //     substitution(cypherInput[i], plugboard);
-  //     console.log(subResult);
-  //rotor1
-  //rotor2
-  //rotor3
-  //reflector
-  //rotor3-substitute only
-  //rotor2-substitute only
-  //rotor1-substitute only
-  //plugboard
-  //push resulting letter to cypherOutput
-  //     }
-
-  //     return encryptedMsg;
-  //   }
+  console.log(encryptedMsg);
+  return encryptedMsg;
 }
 
 //push encryptedMsg onto index.html
