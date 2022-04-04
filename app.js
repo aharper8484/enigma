@@ -258,7 +258,6 @@ function getMessage() {
     //push resulting letter to cypherOutput
     encryptedMsg = encryptedMsg + cypherLetter;
   }
-  console.log(encryptedMsg);
   return (document.getElementById("cypher").innerHTML = encryptedMsg);
 }
 
