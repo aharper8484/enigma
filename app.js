@@ -33,6 +33,7 @@ const plugboard = [
   "Z",
   "P",
   "H",
+  "N",
   "M",
   "S",
   "W",
@@ -238,26 +239,30 @@ function getMessage() {
     let reflectorInputIndex = slowRotor.indexOf(slowRotorNewLetter);
     //substitute letter with reflector array
     let reflectorNewLetter = reflector[reflectorInputIndex];
+    console.log("reflector: " + reflectorNewLetter);
 
     //rotor3-substitute only
     let slowRotorReturnIndex = reflector.indexOf(reflectorNewLetter);
     let slowRotorReturnLetter = slowRotor[slowRotorReturnIndex];
+    console.log("R3: " + slowRotorReturnLetter);
 
     //rotor2-substitute only
     let mediumRotorReturnIndex = slowRotor.indexOf(slowRotorReturnLetter);
     let mediumRotorReturnLetter = mediumRotor[mediumRotorReturnIndex];
+    console.log("R2: " + mediumRotorReturnLetter);
 
     //rotor1-substitute only
     let fastRotorReturnIndex = mediumRotor.indexOf(mediumRotorReturnLetter);
     let fastRotorReturnLetter = fastRotor[fastRotorReturnIndex];
+    console.log("R1: " + fastRotorReturnLetter);
 
     //plugboard
-    let PlugboardReturnIndex = fastRotor.indexOf(fastRotorReturnLetter);
-    let cypherLetter = plugboard[PlugboardReturnIndex];
+    let plugboardReturnIndex = fastRotor.indexOf(fastRotorReturnLetter);
+    let cypherLetter = plugboard[plugboardReturnIndex];
+    console.log("plug: " + cypherLetter);
 
     //push resulting letter to cypherOutput
     encryptedMsg = encryptedMsg + cypherLetter;
-    console.log(i + " letter " + cypherLetter);
   }
   return (document.getElementById("cypher").innerHTML = encryptedMsg);
 }
