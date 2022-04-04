@@ -259,7 +259,7 @@ function getMessage() {
     encryptedMsg = encryptedMsg + cypherLetter;
   }
   console.log(encryptedMsg);
-  return encryptedMsg;
+  return (document.getElementById("cypher").innerHTML = encryptedMsg);
 }
 
 //push encryptedMsg onto index.html
