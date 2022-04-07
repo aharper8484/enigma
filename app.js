@@ -1,3 +1,4 @@
+//CONSTANT VARIABLES
 //array of regular alphabet - index 0 to 25 (26 letters)
 const alphabet = [
   "A",
@@ -28,7 +29,7 @@ const alphabet = [
   "Z",
 ];
 
-//array of plugboard - index 0 to 25
+//array of plugboard letters - index 0 to 25
 const plugboard = [
   "Z",
   "P",
@@ -59,6 +60,7 @@ const plugboard = [
 ];
 
 //array of rotors
+//fast rotor - aka rotor1
 const fastRotor = [
   "E",
   "K",
@@ -88,6 +90,7 @@ const fastRotor = [
   "J",
 ];
 
+//medium rotor - aka rotor2
 const mediumRotor = [
   "A",
   "J",
@@ -117,6 +120,7 @@ const mediumRotor = [
   "E",
 ];
 
+//fast rotor - aka rotor3
 const slowRotor = [
   "B",
   "D",
@@ -146,7 +150,7 @@ const slowRotor = [
   "O",
 ];
 
-//reflector array
+//reflector arrays
 const reflectorA = [
   "E",
   "J",
@@ -205,6 +209,7 @@ const reflectorB = [
   "T",
 ];
 
+//ENCRYPTION FUNCTION
 // retrieve users message and encrypt it
 function encrypt() {
   //variables containing rotor positions
@@ -239,10 +244,6 @@ function encrypt() {
     let plugboardInputIndex = alphabet.indexOf(userInput[i]);
     //substitute letter with plugboard array
     let plugboardOutput = plugboard[plugboardInputIndex];
-
-    // sample messages
-    // hwjefmcwltfnsnselrfdnwoehwjefmcwltfnsnselrfdnwoehwjefmcwltfnsnselrfdnwoe
-    // aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 
     //fast rotor substitute
     //get index of the plugboard array
@@ -302,7 +303,12 @@ function encrypt() {
     //push resulting letter to cypherOutput
     encryptedMsg = encryptedMsg + cypherLetter;
   }
-  return (document.getElementById("message").innerHTML = encryptedMsg);
+  return (
+    (document.getElementById("message").innerHTML = encryptedMsg) +
+    (document.getElementById("r1e").innerHTML = fastRotorOffset) +
+    (document.getElementById("r2e").innerHTML = mediumRotorOffset) +
+    (document.getElementById("r3e").innerHTML = slowRotorOffset)
+  );
 }
 
 function decrypt() {
@@ -322,13 +328,13 @@ function decrypt() {
 
   //variables containing rotor positions
   let fastRotorOffset = document.getElementById("r1").value;
-  let fastCountStart = fastRotorOffset + userInput.length - 1;
+  let fastCountStart = fastRotorOffset + userInput.length;
   let fastCount = fastCountStart;
   let mediumRotorOffset = document.getElementById("r2").value;
-  let mediumCountStart = (fastCountStart % 26) + mediumRotorOffset;
+  let mediumCountStart = (fastCountStart + mediumRotorOffset) % 26;
   let mediumCount = mediumCountStart;
   let slowRotorOffset = document.getElementById("r3").value;
-  let slowcountStart = (mediumCountStart % 26) + slowRotorOffset;
+  let slowcountStart = (mediumCountStart + slowRotorOffset) % 26;
   let slowCount = slowcountStart;
 
   //empty variable to add encrypted letters to
@@ -406,10 +412,16 @@ function decrypt() {
     //push resulting letter to cypherOutput
     decryptedMsg = decryptedMsg + cypherLetter;
   }
-  return (document.getElementById("message").innerHTML = decryptedMsg
-    .split("")
-    .reverse()
-    .join(""));
+
+  return (
+    (document.getElementById("message").innerHTML = decryptedMsg
+      .split("")
+      .reverse()
+      .join("")) +
+    (document.getElementById("r1d").innerHTML = fastCountStart) +
+    (document.getElementById("r2d").innerHTML = mediumCountStart) +
+    (document.getElementById("r3d").innerHTML = slowcountStart)
+  );
 }
 
 //push encryptedMsg onto index.html

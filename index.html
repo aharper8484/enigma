@@ -12,29 +12,51 @@
     <h1>Enigma Machine</h1>
     <h2>by Adam Harper (U2075787)</h2>
     <div id="enigma">
-      <form>
-        <label for="encryption">Message to be Encrypted</label><br />
-        <input
-          type="text"
-          id="encryption"
-          name="encryption"
-          size="100"
-          placeholder="type message to be encrypted here, when finished click submit button"
-        />
-        <input type="button" value="encrypt msg" onclick="encrypt()" />
-      </form>
-      <br />
-      <form>
-        <label for="cypherInput">Message to be Decrypted</label><br />
-        <input
-          type="text"
-          id="cypherInput"
-          name="cypherInput"
-          size="100"
-          placeholder="type message to be encrypted here, when finished click submit button"
-        />
-        <input type="button" value="decrypt msg" onclick="decrypt()" />
-      </form>
+      <table class="msgInputs">
+        <tr>
+          <th>Message to be Encrypted</th>
+          <th>Message to be Decrypted</th>
+        </tr>
+        <tr>
+          <td>
+            <form>
+              <textarea
+                id="encryption"
+                name="encryption"
+                rows="5"
+                columns="300"
+              >
+type message to be encrypted here, when finished click submit button</textarea
+              >
+
+              <br /><input
+                type="button"
+                value="encrypt msg"
+                onclick="encrypt()"
+              />
+            </form>
+          </td>
+          <td>
+            <form>
+              <textarea
+                id="cypherInput"
+                name="cypherInput"
+                rows="5"
+                columns="300"
+              >
+type message to be decrypted here, when finished click submit button</textarea
+              >
+
+              <br /><input
+                type="button"
+                value="decrypt msg"
+                onclick="decrypt()"
+              />
+            </form>
+          </td>
+        </tr>
+      </table>
+
       <br />
 
       <select name="r1" id="r1">
