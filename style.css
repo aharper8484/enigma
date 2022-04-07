@@ -1,5 +1,14 @@
-#cypherInput {
+/* #cypherInput {
   inline-size: auto;
   vertical-align: text-top;
   overflow-wrap: break-word;
+} */
+
+body {
+  background-color: antiquewhite;
+}
+
+h1,
+h2 {
+  text-align: center;
 }

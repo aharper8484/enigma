@@ -214,9 +214,10 @@ function encrypt() {
   let mediumCountStart = mediumRotorOffset;
   let slowRotorOffset = document.getElementById("r3").value;
   let slowcountStart = slowRotorOffset;
+  let reflectorArray;
 
   let reflectorChoice = document.getElementById("reflector").value;
-  if (reflectorChoice === "A") {
+  if (reflectorChoice == "A") {
     reflectorArray = reflectorA;
   } else {
     reflectorArray = reflectorB;
@@ -305,14 +306,13 @@ function encrypt() {
 }
 
 function decrypt() {
-  //variables containing rotor positions
-  let fastRotorOffset = document.getElementById("r1").value;
-  let fastCountStart = fastRotorOffset;
-  let mediumRotorOffset = document.getElementById("r2").value;
-  let mediumCountStart = mediumRotorOffset;
-  let slowRotorOffset = document.getElementById("r3").value;
-  let slowcountStart = slowRotorOffset;
+  //function to retrieve text, remove space + non-letter characters and convert to uppercase
+  var userInput = document
+    .getElementById("cypherInput")
+    .value.replace(/\s+/g, "")
+    .toUpperCase();
 
+  let reflectorArray;
   let reflectorChoice = document.getElementById("reflector").value;
   if (reflectorChoice === "A") {
     reflectorArray = reflectorA;
@@ -320,60 +320,45 @@ function decrypt() {
     reflectorArray = reflectorB;
   }
 
+  //variables containing rotor positions
+  let fastRotorOffset = document.getElementById("r1").value;
+  let fastCountStart = fastRotorOffset + userInput.length - 1;
+  let fastCount = fastCountStart;
+  let mediumRotorOffset = document.getElementById("r2").value;
+  let mediumCountStart = (fastCountStart % 26) + mediumRotorOffset;
+  let mediumCount = mediumCountStart;
+  let slowRotorOffset = document.getElementById("r3").value;
+  let slowcountStart = (mediumCountStart % 26) + slowRotorOffset;
+  let slowCount = slowcountStart;
+
   //empty variable to add encrypted letters to
   let decryptedMsg = "";
 
-  //function to retrieve text, remove space + non-letter characters and convert to uppercase
-  var userInput = document
-    .getElementById("cypherInput")
-    .value.replace(/\s+/g, "")
-    .toUpperCase();
-
   //loop through each letter of the message/user input
-  for (let i = 0; i < userInput.length; i++) {
+  for (let i = userInput.length - 1; i >= 0; i--) {
     //plugboard Outbound
     //get index of letter form alphabet and store in variable
     let plugboardInputIndex = alphabet.indexOf(userInput[i]);
     //substitute letter with plugboard array
     let plugboardOutput = plugboard[plugboardInputIndex];
 
-    // sample messages
-    // hwjefmcwltfnsnselrfdnwoehwjefmcwltfnsnselrfdnwoehwjefmcwltfnsnselrfdnwoe
-    // aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-
     //fast rotor substitute
     //get index of the plugboard array
     let fastRotorOut = plugboard.indexOf(plugboardOutput);
     //substitute letter with fast rotor array
     //include offset
-    fastRotorOut = (fastRotorOut + fastRotorOffset) % 26;
+    fastRotorOut = (fastRotorOut + fastCountStart) % 26;
     let fastRotorNewLetter = fastRotor[fastRotorOut];
-    let fastRotorNewIndex = fastRotor.indexOf(fastRotorNewLetter);
-    fastRotorNewIndex = (fastRotorNewIndex - fastRotorOffset + 26) % 26;
-    fastRotorOffset++;
 
-    //rotor2 sub and rotate
+    //rotor2 sub
     let mediumRotorOut = fastRotor.indexOf(fastRotorNewLetter);
-    mediumRotorOut = (mediumRotorOut + mediumRotorOffset) % 26;
+    mediumRotorOut = (mediumRotorOut + mediumCountStart) % 26;
     let mediumRotorNewLetter = mediumRotor[mediumRotorOut];
-    let mediumRotorNewIndex = mediumRotor.indexOf(mediumRotorNewLetter);
-    mediumRotorNewIndex = (mediumRotorNewIndex - mediumRotorOffset + 26) % 26;
-    if (fastRotorOffset > 0 && (fastRotorOffset - fastCountStart) % 26 == 0) {
-      mediumRotorOffset++;
-    }
 
-    //rotor3 sub and rotate
+    //rotor3 sub
     let slowRotorOut = mediumRotor.indexOf(mediumRotorNewLetter);
-    slowRotorOut = (slowRotorOut + slowRotorOffset) % 26;
+    slowRotorOut = (slowRotorOut + slowcountStart) % 26;
     let slowRotorNewLetter = slowRotor[slowRotorOut];
-    let slowRotorNewIndex = slowRotor.indexOf(slowRotorNewLetter);
-    slowRotorNewIndex = (slowRotorNewIndex - slowRotorOffset + 26) % 26;
-    if (
-      mediumRotorOffset > 0 &&
-      (mediumRotorOffset - mediumCountStart) % 26 == 0
-    ) {
-      slowRotorOffset++;
-    }
 
     //reflector substitution
     let reflectorInputIndex = slowRotor.indexOf(slowRotorNewLetter);
@@ -383,23 +368,48 @@ function decrypt() {
     //rotor3-substitute only *REFLECTOR*
     let slowRotorReturnIndex = reflectorArray.indexOf(reflectorNewLetter);
     let slowRotorReturnLetter = slowRotor[slowRotorReturnIndex];
+    //rotor3 rotate
+    let slowRotorNewIndex = slowRotor.indexOf(slowRotorReturnLetter);
+    slowRotorNewIndex = (slowRotorNewIndex - slowRotorOffset + 26) % 26;
+    if (
+      mediumRotorOffset > 0 &&
+      (mediumRotorOffset - mediumCountStart) % 26 == 0
+    ) {
+      slowCount--;
+    }
 
-    //rotor2-substitute only
+    //rotor2 sub and rotate
     let mediumRotorReturnIndex = slowRotor.indexOf(slowRotorReturnLetter);
     let mediumRotorReturnLetter = mediumRotor[mediumRotorReturnIndex];
+    //rotor2 rotate
+    let mediumRotorNewIndex = mediumRotor.indexOf(mediumRotorReturnLetter);
+    mediumRotorNewIndex = (mediumRotorNewIndex - mediumRotorOffset + 26) % 26;
+    if (fastRotorOffset > 0 && (fastRotorOffset - fastCountStart) % 26 == 0) {
+      mediumCount--;
+    }
 
-    //rotor1-substitute only
+    //rotor1-sub and rotate
     let fastRotorReturnIndex = mediumRotor.indexOf(mediumRotorReturnLetter);
     let fastRotorReturnLetter = fastRotor[fastRotorReturnIndex];
+    //rotor1 rotate
+    let fastRotorNewIndex = fastRotor.indexOf(fastRotorNewLetter);
+    fastRotorNewIndex = (fastRotorNewIndex - fastRotorOffset + 26) % 26;
+    fastCount--;
 
     //plugboard
     let plugboardReturnIndex = fastRotor.indexOf(fastRotorReturnLetter);
-    let cypherLetter = plugboard[plugboardReturnIndex];
+    let plugboardSubLetter = plugboard[plugboardReturnIndex];
+
+    let alphabetIndex = plugboard.indexOf(plugboardSubLetter);
+    let cypherLetter = alphabet[alphabetIndex];
 
     //push resulting letter to cypherOutput
     decryptedMsg = decryptedMsg + cypherLetter;
   }
-  return (document.getElementById("message").innerHTML = decryptedMsg);
+  return (document.getElementById("message").innerHTML = decryptedMsg
+    .split("")
+    .reverse()
+    .join(""));
 }
 
 //push encryptedMsg onto index.html
