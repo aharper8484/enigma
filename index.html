@@ -127,9 +127,33 @@
         <option value="B">B</option></select
       ><label for="reflector"> Choose your reflector (A or B)</label>
       <br /><br />
-      <label for="cypherOutput">Results will appear here</label><br />
+      <label for="cypherOutput"
+        ><strong>Results will appear here:</strong></label
+      ><br />
 
       <div id="message"></div>
+      <table>
+        <tr>
+          <th></th>
+          <th>Encryption</th>
+          <th>Decryption</th>
+        </tr>
+        <tr>
+          <th>Fast Rotor Count</th>
+          <td id="r1e"></td>
+          <td id="r1d"></td>
+        </tr>
+        <tr>
+          <th>Medium Rotor Count</th>
+          <td id="r2e"></td>
+          <td id="r2d"></td>
+        </tr>
+        <tr>
+          <th>Slow Rotor Count</th>
+          <td id="r3e"></td>
+          <td id="r3d"></td>
+        </tr>
+      </table>
     </div>
   </body>
 </html>
