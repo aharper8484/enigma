@@ -214,11 +214,14 @@ const reflectorB = [
 function encrypt() {
   //variables containing rotor positions
   let fastRotorOffset = document.getElementById("r1").value;
-  let fastCountStart = fastRotorOffset;
+  let fastCount = 0;
+  let fastCountStart = fastCount + fastRotorOffset;
   let mediumRotorOffset = document.getElementById("r2").value;
-  let mediumCountStart = mediumRotorOffset;
+  let mediumCount = 0;
+  let mediumCountStart = mediumCount + mediumRotorOffset;
   let slowRotorOffset = document.getElementById("r3").value;
-  let slowcountStart = slowRotorOffset;
+  let slowCount = 0;
+  let slowcountStart = slowCount + slowRotorOffset;
   let reflectorArray;
 
   let reflectorChoice = document.getElementById("reflector").value;
@@ -254,7 +257,7 @@ function encrypt() {
     let fastRotorNewLetter = fastRotor[fastRotorOut];
     let fastRotorNewIndex = fastRotor.indexOf(fastRotorNewLetter);
     fastRotorNewIndex = (fastRotorNewIndex - fastRotorOffset + 26) % 26;
-    fastRotorOffset++;
+    fastCount++;
 
     //rotor2 sub and rotate
     let mediumRotorOut = fastRotor.indexOf(fastRotorNewLetter);
@@ -262,8 +265,8 @@ function encrypt() {
     let mediumRotorNewLetter = mediumRotor[mediumRotorOut];
     let mediumRotorNewIndex = mediumRotor.indexOf(mediumRotorNewLetter);
     mediumRotorNewIndex = (mediumRotorNewIndex - mediumRotorOffset + 26) % 26;
-    if (fastRotorOffset > 0 && (fastRotorOffset - fastCountStart) % 26 == 0) {
-      mediumRotorOffset++;
+    if (fastCount > 0 && (fastCount - fastCountStart) % 26 == 0) {
+      mediumCount++;
     }
 
     //rotor3 sub and rotate
@@ -272,11 +275,8 @@ function encrypt() {
     let slowRotorNewLetter = slowRotor[slowRotorOut];
     let slowRotorNewIndex = slowRotor.indexOf(slowRotorNewLetter);
     slowRotorNewIndex = (slowRotorNewIndex - slowRotorOffset + 26) % 26;
-    if (
-      mediumRotorOffset > 0 &&
-      (mediumRotorOffset - mediumCountStart) % 26 == 0
-    ) {
-      slowRotorOffset++;
+    if (mediumCount > 0 && fastCount % 676 == 0) {
+      slowCount++;
     }
 
     //reflector substitution
@@ -305,9 +305,9 @@ function encrypt() {
   }
   return (
     (document.getElementById("message").innerHTML = encryptedMsg) +
-    (document.getElementById("r1e").innerHTML = fastRotorOffset) +
-    (document.getElementById("r2e").innerHTML = mediumRotorOffset) +
-    (document.getElementById("r3e").innerHTML = slowRotorOffset)
+    (document.getElementById("r1e").innerHTML = fastCount) +
+    (document.getElementById("r2e").innerHTML = mediumCount) +
+    (document.getElementById("r3e").innerHTML = slowCount)
   );
 }
 
@@ -328,13 +328,13 @@ function decrypt() {
 
   //variables containing rotor positions
   let fastRotorOffset = document.getElementById("r1").value;
-  let fastCountStart = fastRotorOffset + userInput.length;
+  let fastCountStart = userInput.length;
   let fastCount = fastCountStart;
   let mediumRotorOffset = document.getElementById("r2").value;
-  let mediumCountStart = (fastCountStart + mediumRotorOffset) % 26;
+  let mediumCountStart = Math.floor(fastCountStart / 26);
   let mediumCount = mediumCountStart;
   let slowRotorOffset = document.getElementById("r3").value;
-  let slowcountStart = (mediumCountStart + slowRotorOffset) % 26;
+  let slowcountStart = Math.floor(mediumCountStart / 26);
   let slowCount = slowcountStart;
 
   //empty variable to add encrypted letters to
@@ -353,17 +353,17 @@ function decrypt() {
     let fastRotorOut = plugboard.indexOf(plugboardOutput);
     //substitute letter with fast rotor array
     //include offset
-    fastRotorOut = (fastRotorOut + fastCountStart) % 26;
+    fastRotorOut = (fastRotorOut + fastCount + fastRotorOffset) % 26;
     let fastRotorNewLetter = fastRotor[fastRotorOut];
 
     //rotor2 sub
     let mediumRotorOut = fastRotor.indexOf(fastRotorNewLetter);
-    mediumRotorOut = (mediumRotorOut + mediumCountStart) % 26;
+    mediumRotorOut = (mediumRotorOut + mediumCount + mediumRotorOffset) % 26;
     let mediumRotorNewLetter = mediumRotor[mediumRotorOut];
 
     //rotor3 sub
     let slowRotorOut = mediumRotor.indexOf(mediumRotorNewLetter);
-    slowRotorOut = (slowRotorOut + slowcountStart) % 26;
+    slowRotorOut = (slowRotorOut + slowCount + slowRotorOffset) % 26;
     let slowRotorNewLetter = slowRotor[slowRotorOut];
 
     //reflector substitution
@@ -371,36 +371,40 @@ function decrypt() {
     //substitute letter with reflector array *REFLECTOR*
     let reflectorNewLetter = reflectorArray[reflectorInputIndex];
 
-    //rotor3-substitute only *REFLECTOR*
-    let slowRotorReturnIndex = reflectorArray.indexOf(reflectorNewLetter);
-    let slowRotorReturnLetter = slowRotor[slowRotorReturnIndex];
+    //rotor3-rotate and sub
     //rotor3 rotate
-    let slowRotorNewIndex = slowRotor.indexOf(slowRotorReturnLetter);
-    slowRotorNewIndex = (slowRotorNewIndex - slowRotorOffset + 26) % 26;
     if (
       mediumRotorOffset > 0 &&
       (mediumRotorOffset - mediumCountStart) % 26 == 0
     ) {
       slowCount--;
     }
+    //sub
+    let slowRotorReturnIndex = reflectorArray.indexOf(reflectorNewLetter);
+    let slowRotorReturnLetter = slowRotor[slowRotorReturnIndex];
+    let slowRotorNewIndex = slowRotor.indexOf(slowRotorReturnLetter);
+    slowRotorNewIndex = (slowRotorNewIndex - slowRotorOffset + 26) % 26;
 
-    //rotor2 sub and rotate
-    let mediumRotorReturnIndex = slowRotor.indexOf(slowRotorReturnLetter);
-    let mediumRotorReturnLetter = mediumRotor[mediumRotorReturnIndex];
+    //rotor2 rotate then sub
     //rotor2 rotate
-    let mediumRotorNewIndex = mediumRotor.indexOf(mediumRotorReturnLetter);
-    mediumRotorNewIndex = (mediumRotorNewIndex - mediumRotorOffset + 26) % 26;
     if (fastRotorOffset > 0 && (fastRotorOffset - fastCountStart) % 26 == 0) {
       mediumCount--;
     }
+    //sub
+    let mediumRotorReturnIndex = slowRotor.indexOf(slowRotorReturnLetter);
+    let mediumRotorReturnLetter = mediumRotor[mediumRotorReturnIndex];
+
+    let mediumRotorNewIndex = mediumRotor.indexOf(mediumRotorReturnLetter);
+    mediumRotorNewIndex = (mediumRotorNewIndex - mediumRotorOffset + 26) % 26;
 
     //rotor1-sub and rotate
+    //rotor1 rotate
+    fastCount--;
+    //sub
     let fastRotorReturnIndex = mediumRotor.indexOf(mediumRotorReturnLetter);
     let fastRotorReturnLetter = fastRotor[fastRotorReturnIndex];
-    //rotor1 rotate
     let fastRotorNewIndex = fastRotor.indexOf(fastRotorNewLetter);
     fastRotorNewIndex = (fastRotorNewIndex - fastRotorOffset + 26) % 26;
-    fastCount--;
 
     //plugboard
     let plugboardReturnIndex = fastRotor.indexOf(fastRotorReturnLetter);
