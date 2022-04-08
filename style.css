@@ -1,9 +1,3 @@
-/* #cypherInput {
-  inline-size: auto;
-  vertical-align: text-top;
-  overflow-wrap: break-word;
-} */
-
 body {
   font-family: "Poppins", sans-serif;
   background-color: #eafcf388;
@@ -21,13 +15,11 @@ h2 {
 
 input[type="text"] {
   padding: 20px 10px;
-  /* line-height: 28px; */
 }
 
 table {
   border-collapse: collapse;
   border: 1.5px solid black;
-  /* width: 100%; */
 }
 
 td,

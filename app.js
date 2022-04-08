@@ -213,17 +213,27 @@ const reflectorB = [
 // retrieve users message and encrypt it
 function encrypt() {
   //variables containing rotor positions
+  //Retrieve user value of Rotor Offset from HTML - default 0
   let fastRotorOffset = document.getElementById("r1").value;
+  //Counter Start value
   let fastCount = 0;
+  //Variable to store count and offset
   let fastCountStart = fastCount + fastRotorOffset;
+
+  //as above for Medium rotor
   let mediumRotorOffset = document.getElementById("r2").value;
   let mediumCount = 0;
   let mediumCountStart = mediumCount + mediumRotorOffset;
+
+  //as above for Slow rotor
   let slowRotorOffset = document.getElementById("r3").value;
   let slowCount = 0;
   let slowcountStart = slowCount + slowRotorOffset;
+
+  //empty variable to select Reflector
   let reflectorArray;
 
+  //user value retrieved from HTML - function to store choice in reflector Array variable
   let reflectorChoice = document.getElementById("reflector").value;
   if (reflectorChoice == "A") {
     reflectorArray = reflectorA;
@@ -231,7 +241,7 @@ function encrypt() {
     reflectorArray = reflectorB;
   }
 
-  //empty variable to add encrypted letters to
+  //empty string variable to push encrypted letter into to form message
   let encryptedMsg = "";
 
   //function to retrieve text, remove space + non-letter characters and convert to uppercase
@@ -243,7 +253,7 @@ function encrypt() {
   //loop through each letter of the message/user input
   for (let i = 0; i < userInput.length; i++) {
     //plugboard Outbound
-    //get index of letter form alphabet and store in variable
+    //get index of letter from alphabet and store in variable
     let plugboardInputIndex = alphabet.indexOf(userInput[i]);
     //substitute letter with plugboard array
     let plugboardOutput = plugboard[plugboardInputIndex];
@@ -252,24 +262,31 @@ function encrypt() {
     //get index of the plugboard array
     let fastRotorOut = plugboard.indexOf(plugboardOutput);
     //substitute letter with fast rotor array
-    //include offset
+    //include offset and ensure value is between 0-25
     fastRotorOut = (fastRotorOut + fastRotorOffset) % 26;
+    //obtain new letter from Fast Rotor
     let fastRotorNewLetter = fastRotor[fastRotorOut];
+    //obtain index from Fast Rotor with new letter
     let fastRotorNewIndex = fastRotor.indexOf(fastRotorNewLetter);
     fastRotorNewIndex = (fastRotorNewIndex - fastRotorOffset + 26) % 26;
+    //rotate/increment Fast rotor - **every time outbound**
     fastCount++;
 
-    //rotor2 sub and rotate
+    //medium rotor - substitute and rotate
+    //same as fast rotor **except for rotate function**
     let mediumRotorOut = fastRotor.indexOf(fastRotorNewLetter);
     mediumRotorOut = (mediumRotorOut + mediumRotorOffset) % 26;
     let mediumRotorNewLetter = mediumRotor[mediumRotorOut];
     let mediumRotorNewIndex = mediumRotor.indexOf(mediumRotorNewLetter);
     mediumRotorNewIndex = (mediumRotorNewIndex - mediumRotorOffset + 26) % 26;
+    //only rotates when fast count has completed full rotation - 26 times
+    //two conditions included to ensure medium count doesn't increment on first pass
     if (fastCount > 0 && (fastCount - fastCountStart) % 26 == 0) {
       mediumCount++;
     }
 
     //rotor3 sub and rotate
+    //same as medium rotor but rotation occurs on full rotation of medium rotor
     let slowRotorOut = mediumRotor.indexOf(mediumRotorNewLetter);
     slowRotorOut = (slowRotorOut + slowRotorOffset) % 26;
     let slowRotorNewLetter = slowRotor[slowRotorOut];
@@ -279,30 +296,35 @@ function encrypt() {
       slowCount++;
     }
 
-    //reflector substitution
+    //reflector substitution - takes index from slow rotor
+    //uses the array variable from user input - reflectorArray
     let reflectorInputIndex = slowRotor.indexOf(slowRotorNewLetter);
-    //substitute letter with reflector array *REFLECTOR*
     let reflectorNewLetter = reflectorArray[reflectorInputIndex];
 
-    //rotor3-substitute only *REFLECTOR*
+    //return journey - substitutions only - slow rotor
     let slowRotorReturnIndex = reflectorArray.indexOf(reflectorNewLetter);
     let slowRotorReturnLetter = slowRotor[slowRotorReturnIndex];
 
-    //rotor2-substitute only
+    //substitution - medium rotor
     let mediumRotorReturnIndex = slowRotor.indexOf(slowRotorReturnLetter);
     let mediumRotorReturnLetter = mediumRotor[mediumRotorReturnIndex];
 
-    //rotor1-substitute only
+    //substitution - slow rotor
     let fastRotorReturnIndex = mediumRotor.indexOf(mediumRotorReturnLetter);
     let fastRotorReturnLetter = fastRotor[fastRotorReturnIndex];
 
-    //plugboard
+    //plugboard substitution
     let plugboardReturnIndex = fastRotor.indexOf(fastRotorReturnLetter);
-    let cypherLetter = plugboard[plugboardReturnIndex];
+    let plugboardReturnLetter = plugboard[plugboardReturnIndex];
+
+    //sub back to alphabet
+    cypherIndex = plugboard.indexOf(plugboardReturnLetter);
+    cypherLetter = alphabet[cypherIndex];
 
     //push resulting letter to cypherOutput
     encryptedMsg = encryptedMsg + cypherLetter;
   }
+  //push encrypted message and rotor counts to HTML using ID tags
   return (
     (document.getElementById("messageE").innerHTML = encryptedMsg) +
     (document.getElementById("r1e").innerHTML = fastCount) +
@@ -318,6 +340,7 @@ function decrypt() {
     .value.replace(/\s+/g, "")
     .toUpperCase();
 
+  //same as encryption - empty variable to store users choice of reflector
   let reflectorArray;
   let reflectorChoice = document.getElementById("reflector").value;
   if (reflectorChoice === "A") {
@@ -327,12 +350,16 @@ function decrypt() {
   }
 
   //variables containing rotor positions
+  //Variable will be counting backwards so taking final values
   let fastRotorOffset = document.getElementById("r1").value;
+  //fast rotor always rotates so will be same as the message length
   let fastCountStart = userInput.length;
   let fastCount = fastCountStart;
   let mediumRotorOffset = document.getElementById("r2").value;
+  //medium rotor will rotate every 26 rotations of the fast rotor
   let mediumCountStart = Math.floor(fastCountStart / 26);
   let mediumCount = mediumCountStart;
+  //slow rotor will rotate every 26 rotation of the medium rotor
   let slowRotorOffset = document.getElementById("r3").value;
   let slowcountStart = Math.floor(mediumCountStart / 26);
   let slowCount = slowcountStart;
@@ -341,6 +368,7 @@ function decrypt() {
   let decryptedMsg = "";
 
   //loop through each letter of the message/user input
+  //**loops backwards through the message**/
   for (let i = userInput.length - 1; i >= 0; i--) {
     //plugboard Outbound
     //get index of letter form alphabet and store in variable
@@ -348,68 +376,64 @@ function decrypt() {
     //substitute letter with plugboard array
     let plugboardOutput = plugboard[plugboardInputIndex];
 
-    //fast rotor substitute
+    //fast rotor - SUB only - rotates backwards on return
     //get index of the plugboard array
     let fastRotorOut = plugboard.indexOf(plugboardOutput);
     //substitute letter with fast rotor array
-    //include offset
+    //include offset and number of rotations
     fastRotorOut = (fastRotorOut + fastCount + fastRotorOffset) % 26;
     let fastRotorNewLetter = fastRotor[fastRotorOut];
 
-    //rotor2 sub
+    //medium rotor - SUB only - same as above
     let mediumRotorOut = fastRotor.indexOf(fastRotorNewLetter);
     mediumRotorOut = (mediumRotorOut + mediumCount + mediumRotorOffset) % 26;
     let mediumRotorNewLetter = mediumRotor[mediumRotorOut];
 
-    //rotor3 sub
+    //slow rotor - SUB only - same as above
     let slowRotorOut = mediumRotor.indexOf(mediumRotorNewLetter);
     slowRotorOut = (slowRotorOut + slowCount + slowRotorOffset) % 26;
     let slowRotorNewLetter = slowRotor[slowRotorOut];
 
-    //reflector substitution
+    //reflector substitution using user choice
     let reflectorInputIndex = slowRotor.indexOf(slowRotorNewLetter);
-    //substitute letter with reflector array *REFLECTOR*
     let reflectorNewLetter = reflectorArray[reflectorInputIndex];
 
-    //rotor3-rotate and sub
-    //rotor3 rotate
+    //slow rotor - rotate then substitute
+    //reverse of encryption
     if (
       mediumRotorOffset > 0 &&
       (mediumRotorOffset - mediumCountStart) % 26 == 0
     ) {
+      //counting down
       slowCount--;
     }
-    //sub
+    //subtitution of slow rotor
     let slowRotorReturnIndex = reflectorArray.indexOf(reflectorNewLetter);
     let slowRotorReturnLetter = slowRotor[slowRotorReturnIndex];
     let slowRotorNewIndex = slowRotor.indexOf(slowRotorReturnLetter);
     slowRotorNewIndex = (slowRotorNewIndex - slowRotorOffset + 26) % 26;
 
-    //rotor2 rotate then sub
-    //rotor2 rotate
+    //medium rotor - rotate then subtitute - as above
     if (fastRotorOffset > 0 && (fastRotorOffset - fastCountStart) % 26 == 0) {
       mediumCount--;
     }
-    //sub
     let mediumRotorReturnIndex = slowRotor.indexOf(slowRotorReturnLetter);
     let mediumRotorReturnLetter = mediumRotor[mediumRotorReturnIndex];
-
     let mediumRotorNewIndex = mediumRotor.indexOf(mediumRotorReturnLetter);
     mediumRotorNewIndex = (mediumRotorNewIndex - mediumRotorOffset + 26) % 26;
 
-    //rotor1-sub and rotate
-    //rotor1 rotate
+    //fast rotor - sub and rotate - as above but always rotates, backwards
     fastCount--;
-    //sub
     let fastRotorReturnIndex = mediumRotor.indexOf(mediumRotorReturnLetter);
     let fastRotorReturnLetter = fastRotor[fastRotorReturnIndex];
     let fastRotorNewIndex = fastRotor.indexOf(fastRotorNewLetter);
     fastRotorNewIndex = (fastRotorNewIndex - fastRotorOffset + 26) % 26;
 
-    //plugboard
+    //plugboard substitution
     let plugboardReturnIndex = fastRotor.indexOf(fastRotorReturnLetter);
     let plugboardSubLetter = plugboard[plugboardReturnIndex];
 
+    //sub back into alphabet array
     let alphabetIndex = plugboard.indexOf(plugboardSubLetter);
     let cypherLetter = alphabet[alphabetIndex];
 
@@ -417,6 +441,7 @@ function decrypt() {
     decryptedMsg = decryptedMsg + cypherLetter;
   }
 
+  //push the decrypted message and rotor counts to HTML
   return (
     (document.getElementById("messageD").innerHTML = decryptedMsg
       .split("")
@@ -427,5 +452,3 @@ function decrypt() {
     (document.getElementById("r3d").innerHTML = slowcountStart)
   );
 }
-
-//push encryptedMsg onto index.html

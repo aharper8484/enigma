@@ -12,9 +12,12 @@
     <title>U2075787 - Adam Harper - Enigma Machine</title>
   </head>
   <body>
+    <!-- Header -->
     <h1>Enigma Machine</h1>
     <h2>by Adam Harper (U2075787)</h2>
+    <!-- Main Body of Machine -->
     <div id="enigma">
+      <!-- User Input Fields using submit button -->
       <table class="msgInputs">
         <tr>
           <th>Message to be Encrypted</th>
@@ -59,6 +62,7 @@
       </table>
 
       <br />
+      <!-- User setting selections - data pushed to JavaScript -->
       <div class="toggles">
         <select name="r1" id="r1">
           <option value="0">1</option>
@@ -150,6 +154,7 @@
         ><label for="reflector"> Choose your reflector (A or B)</label>
       </div>
       <br />
+      <!-- Resulting encryption and Decryption fields -->
       <div id="message" class="resultMsg">
         <table id="resultsTable">
           <tr>
@@ -163,6 +168,7 @@
         </table>
       </div>
       <br />
+      <!-- Rotor Counts for Comparison -->
       <table>
         <tr>
           <th></th>
