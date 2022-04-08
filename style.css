@@ -5,12 +5,18 @@
 } */
 
 body {
-  font-family: arial, sans-serif;
+  font-family: "Poppins", sans-serif;
+  background-color: #eafcf388;
+  font-size: 00.8rem;
 }
 
 h1,
 h2 {
   text-align: center;
+}
+
+h2 {
+  font-size: 0.8rem;
 }
 
 input[type="text"] {
@@ -20,28 +26,45 @@ input[type="text"] {
 
 table {
   border-collapse: collapse;
-  width: 100%;
+  border: 1.5px solid black;
+  /* width: 100%; */
 }
 
 td,
 th {
-  border: 1px solid #dddddd;
+  border: 1px solid #fceaea88;
   text-align: left;
   padding: 8px;
 }
 
 tr:nth-child(even) {
-  background-color: #dddddd;
+  background-color: #fceaea88;
 }
 
 .msgInputs {
   table-layout: fixed;
   width: 100%;
 }
+
+#resultsTable {
+  table-layout: fixed;
+  width: 100%;
+}
+
 table.msgInputs td.msgInputs {
   width: 75px;
 }
 
 .msgInputs textarea {
   width: 100%;
+}
+
+#messageE {
+  width: 100%;
+  word-break: break-word;
+}
+
+#messageD {
+  width: 100%;
+  word-break: break-word;
 }

@@ -304,7 +304,7 @@ function encrypt() {
     encryptedMsg = encryptedMsg + cypherLetter;
   }
   return (
-    (document.getElementById("message").innerHTML = encryptedMsg) +
+    (document.getElementById("messageE").innerHTML = encryptedMsg) +
     (document.getElementById("r1e").innerHTML = fastCount) +
     (document.getElementById("r2e").innerHTML = mediumCount) +
     (document.getElementById("r3e").innerHTML = slowCount)
@@ -418,7 +418,7 @@ function decrypt() {
   }
 
   return (
-    (document.getElementById("message").innerHTML = decryptedMsg
+    (document.getElementById("messageD").innerHTML = decryptedMsg
       .split("")
       .reverse()
       .join("")) +
