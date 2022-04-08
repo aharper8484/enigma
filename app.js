@@ -400,10 +400,7 @@ function decrypt() {
 
     //slow rotor - rotate then substitute
     //reverse of encryption
-    if (
-      mediumRotorOffset > 0 &&
-      (mediumRotorOffset - mediumCountStart) % 26 == 0
-    ) {
+    if (slowcountStart > 0 && mediumCount % 26 == 0) {
       //counting down
       slowCount--;
     }
@@ -414,7 +411,7 @@ function decrypt() {
     slowRotorNewIndex = (slowRotorNewIndex - slowRotorOffset + 26) % 26;
 
     //medium rotor - rotate then subtitute - as above
-    if (fastRotorOffset > 0 && (fastRotorOffset - fastCountStart) % 26 == 0) {
+    if (mediumCount > 0 && fastCount % 26 == 0) {
       mediumCount--;
     }
     let mediumRotorReturnIndex = slowRotor.indexOf(slowRotorReturnLetter);
