@@ -207,28 +207,20 @@ const slowRotorArray = [
 
 function encrypt() {
   //substitution function
-  function substitute(inputArray, inputValue, subArray) {
-    let index = inputArray.indexOf(inputValue);
-    return subArray[index];
-  }
-
-  //empty variable to select Reflector
-  let reflectorArray;
-
-  //user value retrieved from HTML - function to store choice in reflector Array variable
-  let reflectorChoice = document.getElementById("reflector").value;
-  if (reflectorChoice == "A") {
-    reflectorArray = reflectorA;
-  } else {
-    reflectorArray = reflectorB;
-  }
+  let substitute = function (inputArray, inputValue, subArray, offset) {
+    let inputArrayFromObj = Array.from(inputArray);
+    let index = inputArrayFromObj.indexOf(inputValue);
+    let newIndex = (index + offset) % 25;
+    let subArrayFromObj = Array.from(subArray);
+    return subArrayFromObj[newIndex];
+  };
 
   const Rotor = function (letters, offset, count, state) {
     this.letters = letters;
     this.offset = offset;
     this.count = count;
     this.state = function () {
-      (this.count + this.offset) % 25;
+      return (this.count + this.offset) % 25;
     };
   };
 
@@ -237,7 +229,6 @@ function encrypt() {
     document.getElementById("r1").value,
     0
   );
-  console.log(fastRotor);
 
   const mediumRotor = new Rotor(
     mediumRotorArray,
@@ -250,4 +241,91 @@ function encrypt() {
     document.getElementById("r3").value,
     0
   );
+
+  //empty variable to select Reflector
+  let reflectorArray;
+
+  //user value retrieved from HTML - function to store choice in reflector Array variable
+  let reflectorChoice = document.getElementById("reflector").value;
+  if (reflectorChoice == "A") {
+    reflectorArray = reflectorA;
+  } else {
+    reflectorArray = reflectorB;
+  }
+
+  let encryptedMsg = "";
+
+  //function to retrieve text, remove space + non-letter characters and convert to uppercase
+  var userInput = document
+    .getElementById("encryption")
+    .value.replace(/\s+/g, "")
+    .toUpperCase();
+
+  for (let i = 0; i < userInput.length; i++) {
+    //plugboard substitution
+    let plugboardSub = substitute(alphabet, userInput, plugboard, 0);
+    let fastRotorSub = substitute(
+      plugboard,
+      plugboardSub,
+      fastRotor.letters,
+      fastRotor.state
+    );
+    fastRotor.count++;
+    let mediumRotorSub = substitute(
+      fastRotor.state,
+      fastRotorSub,
+      mediumRotor.letters,
+      mediumRotor.state
+    );
+    if (fastRotor.count % 25 === 0) {
+      mediumRotor.count++;
+    }
+    let slowRotorSub = substitute(
+      mediumRotor.state,
+      mediumRotorSub,
+      slowRotor.letters,
+      slowRotor.state
+    );
+    if (mediumRotor.count % 25 === 0 && mediumRotor.count > 0) {
+      slowRotor.count++;
+    }
+    let reflectionSub = substitute(
+      slowRotor.state,
+      slowRotorSub,
+      reflectorArray,
+      0
+    );
+    let slowRotorSubReturn = substitute(
+      reflectorArray,
+      reflectionSub,
+      slowRotor.letters,
+      slowRotor.state
+    );
+    let mediumRotorSubReturn = substitute(
+      slowRotor.state,
+      slowRotorSubReturn,
+      mediumRotor.letters,
+      mediumRotor.state
+    );
+    let fastRotorSubReturn = substitute(
+      mediumRotor.state,
+      mediumRotorSubReturn,
+      fastRotor.state
+    );
+    let returnLetter = substitute(
+      fastRotor.state,
+      fastRotorSubReturn,
+      plugboard,
+      0
+    );
+    encryptedMsg = encryptedMsg + returnLetter;
+  }
+  //push encrypted message and rotor counts to HTML using ID tags
+  return console.log(encryptedMsg);
+  // (
+  //   (document.getElementById("messageE").innerHTML = encryptedMsg) +
+  //   (document.getElementById("r1e").innerHTML = fastRotor.count) +
+  //   (document.getElementById("r2e").innerHTML = mediumRotor.count) +
+  //   (document.getElementById("r3e").innerHTML = slowRotor.count)
+  // );
 }

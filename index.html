@@ -17,51 +17,6 @@
     <h2>by Adam Harper (U2075787)</h2>
     <!-- Main Body of Machine -->
     <div id="enigma">
-      <!-- User Input Fields using submit button -->
-      <table class="msgInputs">
-        <tr>
-          <th>Message to be Encrypted</th>
-          <th>Message to be Decrypted</th>
-        </tr>
-        <tr>
-          <td>
-            <form>
-              <textarea
-                id="encryption"
-                name="encryption"
-                rows="3"
-                columns="300"
-                placeholder="type message to be encrypted here, when finished click submit button"
-              ></textarea>
-
-              <br /><input
-                type="button"
-                value="encrypt msg"
-                onclick="encrypt()"
-              />
-            </form>
-          </td>
-          <td>
-            <form>
-              <textarea
-                id="cypherInput"
-                name="cypherInput"
-                rows="3"
-                columns="300"
-                placeholder="type message to be decrypted here, when finished click submit button"
-              ></textarea>
-
-              <br /><input
-                type="button"
-                value="decrypt msg"
-                onclick="decrypt()"
-              />
-            </form>
-          </td>
-        </tr>
-      </table>
-
-      <br />
       <!-- User setting selections - data pushed to JavaScript -->
       <div class="toggles">
         <select name="r1" id="r1">
@@ -154,6 +109,52 @@
         ><label for="reflector"> Choose your reflector (A or B)</label>
       </div>
       <br />
+      <!-- User Input Fields using submit button -->
+      <table class="msgInputs">
+        <tr>
+          <th>Message to be Encrypted</th>
+          <th>Message to be Decrypted</th>
+        </tr>
+        <tr>
+          <td>
+            <form>
+              <textarea
+                id="encryption"
+                name="encryption"
+                rows="3"
+                columns="300"
+                placeholder="type message to be encrypted here, when finished click submit button"
+              ></textarea>
+
+              <br /><input
+                type="button"
+                value="encrypt msg"
+                onclick="encrypt()"
+              />
+            </form>
+          </td>
+          <td>
+            <form>
+              <textarea
+                id="cypherInput"
+                name="cypherInput"
+                rows="3"
+                columns="300"
+                placeholder="type message to be decrypted here, when finished click submit button"
+              ></textarea>
+
+              <br /><input
+                type="button"
+                value="decrypt msg"
+                onclick="decrypt()"
+              />
+            </form>
+          </td>
+        </tr>
+      </table>
+
+      <br />
+
       <!-- Resulting encryption and Decryption fields -->
       <div id="message" class="resultMsg">
         <table id="resultsTable">
