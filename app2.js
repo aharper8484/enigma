@@ -215,28 +215,39 @@ function encrypt() {
     return subArrayFromObj[newIndex];
   };
 
-  const Rotor = function (letters, offset, count, state) {
-    this.letters = letters;
-    this.offset = offset;
-    this.count = count;
-    this.state = function () {
+  class Rotor {
+    constructor(letters, offset, count) {
+      this.letters = letters;
+      this.offset = offset;
+      this.count = count;
+    }
+    state() {
       return (this.count + this.offset) % 25;
-    };
-  };
+    }
+  }
 
-  const fastRotor = new Rotor(
+  // const Rotor = function (letters, offset, count, state) {
+  //   this.letters = letters;
+  //   this.offset = offset;
+  //   this.count = count;
+  //   this.state = function () {
+  //     return (this.count + this.offset) % 25;
+  //   };
+  // };
+
+  let fastRotor = new Rotor(
     fastRotorArray,
     document.getElementById("r1").value,
     0
   );
 
-  const mediumRotor = new Rotor(
+  let mediumRotor = new Rotor(
     mediumRotorArray,
     document.getElementById("r2").value,
     0
   );
 
-  const slowRotor = new Rotor(
+  let slowRotor = new Rotor(
     slowRotorArray,
     document.getElementById("r3").value,
     0
@@ -264,33 +275,34 @@ function encrypt() {
   for (let i = 0; i < userInput.length; i++) {
     //plugboard substitution
     let plugboardSub = substitute(alphabet, userInput, plugboard, 0);
+    console.log(plugboardSub);
     let fastRotorSub = substitute(
       plugboard,
       plugboardSub,
       fastRotor.letters,
-      fastRotor.state
+      fastRotor.state()
     );
     fastRotor.count++;
     let mediumRotorSub = substitute(
-      fastRotor.state,
+      fastRotor.state(),
       fastRotorSub,
       mediumRotor.letters,
-      mediumRotor.state
+      mediumRotor.state()
     );
     if (fastRotor.count % 25 === 0) {
       mediumRotor.count++;
     }
     let slowRotorSub = substitute(
-      mediumRotor.state,
+      mediumRotor.state(),
       mediumRotorSub,
       slowRotor.letters,
-      slowRotor.state
+      slowRotor.state()
     );
     if (mediumRotor.count % 25 === 0 && mediumRotor.count > 0) {
       slowRotor.count++;
     }
     let reflectionSub = substitute(
-      slowRotor.state,
+      slowRotor.state(),
       slowRotorSub,
       reflectorArray,
       0
@@ -299,21 +311,22 @@ function encrypt() {
       reflectorArray,
       reflectionSub,
       slowRotor.letters,
-      slowRotor.state
+      slowRotor.state()
     );
     let mediumRotorSubReturn = substitute(
-      slowRotor.state,
+      slowRotor.state(),
       slowRotorSubReturn,
       mediumRotor.letters,
-      mediumRotor.state
+      mediumRotor.state()
     );
     let fastRotorSubReturn = substitute(
       mediumRotor.state,
       mediumRotorSubReturn,
-      fastRotor.state
+      fastRotor.letters,
+      fastRotor.state()
     );
     let returnLetter = substitute(
-      fastRotor.state,
+      fastRotor.state(),
       fastRotorSubReturn,
       plugboard,
       0
