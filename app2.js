@@ -207,12 +207,21 @@ const slowRotorArray = [
 
 function encrypt() {
   //substitution function
-  let substitute = function (inputArray, inputValue, subArray, offset) {
-    let inputArrayFromObj = Array.from(inputArray);
-    let index = inputArrayFromObj.indexOf(inputValue);
-    let newIndex = (index + offset) % 25;
-    let subArrayFromObj = Array.from(subArray);
-    return subArrayFromObj[newIndex];
+  let substitute = function (inputIndex, subArray, subOffset) {
+    //find index number from the input array
+    let index = inputIndex + inputOffset;
+    // value and array and array state
+    //use the index to find the new value in the output array
+    let newValueArray = Array.from(subArray);
+    let newArrayState;
+    let newValueIndex = newValueArray.indexOf();
+    //ensure the array is in its current state
+    //return the new value
+    // let inputArrayFromObj = Array.from(inputArray);
+    // let index = inputArrayFromObj.indexOf(inputValue);
+    // let newIndex = (index + offset) % 25;
+    // let subArrayFromObj = Array.from(subArray);
+    // return subArrayFromObj[newIndex];
   };
 
   class Rotor {
