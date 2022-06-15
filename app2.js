@@ -208,20 +208,10 @@ const slowRotorArray = [
 function encrypt() {
   //substitution function
   let substitute = function (inputIndex, subArray, subOffset) {
-    //find index number from the input array
-    let index = inputIndex + inputOffset;
-    // value and array and array state
-    //use the index to find the new value in the output array
-    let newValueArray = Array.from(subArray);
-    let newArrayState;
-    let newValueIndex = newValueArray.indexOf();
-    //ensure the array is in its current state
-    //return the new value
-    // let inputArrayFromObj = Array.from(inputArray);
-    // let index = inputArrayFromObj.indexOf(inputValue);
-    // let newIndex = (index + offset) % 25;
-    // let subArrayFromObj = Array.from(subArray);
-    // return subArrayFromObj[newIndex];
+    let newIndex = (inputIndex + subOffset) % 25;
+    let subArrayFromObj = Array.from(subArray);
+    let resultArray = [newIndex, subArrayFromObj[newIndex]];
+    return resultArray;
   };
 
   class Rotor {
@@ -283,18 +273,15 @@ function encrypt() {
 
   for (let i = 0; i < userInput.length; i++) {
     //plugboard substitution
-    let plugboardSub = substitute(alphabet, userInput, plugboard, 0);
-    console.log(plugboardSub);
+    let plugboardSub = substitute(alphabet.indexOf(userInput), plugboard, 0);
     let fastRotorSub = substitute(
-      plugboard,
-      plugboardSub,
+      plugboardSub[0],
       fastRotor.letters,
       fastRotor.state()
     );
     fastRotor.count++;
     let mediumRotorSub = substitute(
-      fastRotor.state(),
-      fastRotorSub,
+      fastRotorSub[0],
       mediumRotor.letters,
       mediumRotor.state()
     );
@@ -302,52 +289,37 @@ function encrypt() {
       mediumRotor.count++;
     }
     let slowRotorSub = substitute(
-      mediumRotor.state(),
-      mediumRotorSub,
+      mediumRotorSub[0],
       slowRotor.letters,
       slowRotor.state()
     );
     if (mediumRotor.count % 25 === 0 && mediumRotor.count > 0) {
       slowRotor.count++;
     }
-    let reflectionSub = substitute(
-      slowRotor.state(),
-      slowRotorSub,
-      reflectorArray,
-      0
-    );
+    let reflectionSub = substitute(slowRotorSub[0], reflectorArray, 0);
     let slowRotorSubReturn = substitute(
-      reflectorArray,
-      reflectionSub,
+      reflectionSub[0],
       slowRotor.letters,
       slowRotor.state()
     );
     let mediumRotorSubReturn = substitute(
-      slowRotor.state(),
-      slowRotorSubReturn,
+      slowRotorSubReturn[0],
       mediumRotor.letters,
       mediumRotor.state()
     );
     let fastRotorSubReturn = substitute(
-      mediumRotor.state,
-      mediumRotorSubReturn,
+      mediumRotorSubReturn[0],
       fastRotor.letters,
       fastRotor.state()
     );
-    let returnLetter = substitute(
-      fastRotor.state(),
-      fastRotorSubReturn,
-      plugboard,
-      0
-    );
-    encryptedMsg = encryptedMsg + returnLetter;
+    let returnLetter = substitute(fastRotorSubReturn[0], plugboard, 0);
+    encryptedMsg = encryptedMsg + returnLetter[1];
   }
   //push encrypted message and rotor counts to HTML using ID tags
-  return console.log(encryptedMsg);
-  // (
-  //   (document.getElementById("messageE").innerHTML = encryptedMsg) +
-  //   (document.getElementById("r1e").innerHTML = fastRotor.count) +
-  //   (document.getElementById("r2e").innerHTML = mediumRotor.count) +
-  //   (document.getElementById("r3e").innerHTML = slowRotor.count)
-  // );
+  return console.log(
+    (document.getElementById("messageE").innerHTML = encryptedMsg) +
+      (document.getElementById("r1e").innerHTML = fastRotor.count) +
+      (document.getElementById("r2e").innerHTML = mediumRotor.count) +
+      (document.getElementById("r3e").innerHTML = slowRotor.count)
+  );
 }
