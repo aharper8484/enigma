@@ -217,7 +217,7 @@ function encrypt() {
   class Rotor {
     constructor(letters, offset, count) {
       this.letters = letters;
-      this.offset = offset;
+      this.offset = parseInt(offset);
       this.count = count;
     }
     state() {
@@ -314,6 +314,7 @@ function encrypt() {
     );
     let returnLetter = substitute(fastRotorSubReturn[0], plugboard, 0);
     encryptedMsg = encryptedMsg + returnLetter[1];
+    console.log(fastRotor.state());
   }
   //push encrypted message and rotor counts to HTML using ID tags
   return console.log(
