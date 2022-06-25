@@ -381,34 +381,33 @@ function decrypt() {
       fastRotor.letters,
       fastRotor.state()
     );
-    fastRotor.count--;
     let mediumRotorSub = substitute(
       fastRotorSub[0],
       mediumRotor.letters,
       mediumRotor.state()
     );
-    if (fastRotor.count % 25 === 0) {
-      mediumRotor.count--;
-    }
     let slowRotorSub = substitute(
       mediumRotorSub[0],
       slowRotor.letters,
       slowRotor.state()
     );
-    if (mediumRotor.count % 25 === 0 && mediumRotor.count > 0) {
-      slowRotor.count--;
-    }
     let reflectionSub = substitute(slowRotorSub[0], reflectorArray, 0);
     let slowRotorSubReturn = substitute(
       reflectionSub[0],
       slowRotor.letters,
       slowRotor.state()
     );
+    if (mediumRotor.count % 25 === 0 && mediumRotor.count > 0) {
+      slowRotor.count--;
+    }
     let mediumRotorSubReturn = substitute(
       slowRotorSubReturn[0],
       mediumRotor.letters,
       mediumRotor.state()
     );
+    if (fastRotor.count % 25 === 0) {
+      mediumRotor.count--;
+    }
     let fastRotorSubReturn = substitute(
       mediumRotorSubReturn[0],
       fastRotor.letters,
@@ -416,6 +415,7 @@ function decrypt() {
     );
     let returnLetter = substitute(fastRotorSubReturn[0], plugboard, 0);
     decryptedMsg = decryptedMsg + returnLetter[1];
+    fastRotor.count--;
     console.log(fastRotor.state());
   }
   //push encrypted message and rotor counts to HTML using ID tags
