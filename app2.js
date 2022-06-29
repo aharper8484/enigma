@@ -205,6 +205,7 @@ const slowRotorArray = [
   "O",
 ];
 
+//count states and rotations are incorrect
 function encrypt() {
   //substitution function
   let substitute = function (inputIndex, subArray, subOffset) {
